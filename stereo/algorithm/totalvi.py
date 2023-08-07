@@ -3,6 +3,7 @@ from copy import deepcopy
 import anndata
 import numpy as np
 import scvi
+import mudata
 
 from stereo.algorithm.algorithm_base import AlgorithmBase
 from stereo.core.stereo_exp_data import StereoExpData, AnnBasedStereoExpData
@@ -24,7 +25,7 @@ class TotalVi(AlgorithmBase):
         assert self.stereo_exp_data.shape == protein_data.shape
 
         if self.stereo_exp_data.raw is None:
-            raise Exception("there is no raw data, please run data.tl.raw_checkpoint before normalization.")
+            raise Exception("Raw data is not exists, please run data.tl.raw_checkpoint before normalization.")
         
         assert self.stereo_exp_data.shape == self.stereo_exp_data.raw.shape
 
@@ -33,7 +34,7 @@ class TotalVi(AlgorithmBase):
         else:
             data = self.stereo_exp_data
 
-        if isinstance(rna_data, StereoExpData):
+        if not isinstance(rna_data, AnnBasedStereoExpData):
             LogManager.stop_logging()
             rna_data: anndata.AnnData = stereo_to_anndata(data, split_batches=False)
             LogManager.start_logging()
